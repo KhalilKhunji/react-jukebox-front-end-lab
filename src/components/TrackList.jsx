@@ -1,4 +1,4 @@
-const TrackList = ({ tracks, edit }) => {
+const TrackList = ({ tracks, edit, handleDeleteTrack }) => {
     return(
         <>
             <h2>TrackList</h2>
@@ -10,6 +10,7 @@ const TrackList = ({ tracks, edit }) => {
                         </div>
                         <div>
                             <button onClick={() => edit(track)}>Edit Track</button>
+                            <button onClick={() => handleDeleteTrack(track._id)}>Delete Track</button>
                         </div>
                     </li>
                 ))}

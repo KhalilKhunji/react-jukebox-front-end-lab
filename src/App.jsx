@@ -67,11 +67,23 @@ const App = () => {
     setIsFormOpen(false);
   };
 
+  const handleDeleteTrack = async (trackId) => {
+    try {
+      const deletedTrack = await trackService.remove(trackId);
+      if (deletedTrack.error) {
+        throw new Error(deletedTrack.error);
+      };
+      setTracks(tracks.filter((track) => track._id !== trackId));
+    } catch (error) {
+      console.log(error);
+    };
+  };
+
   return(
     <>
       {isFormOpen ? <TrackForm setIsFormOpen={setIsFormOpen} handleOnSubmit={handleOnSubmit} track={ editMode ? editTrack : null} /> : <>
-        <button onClick={() => {setIsFormOpen(true)}}>Add New Track</button>
-        <TrackList tracks={tracks} edit={edit} />
+        <button onClick={() => {setIsFormOpen(true); setEditMode(false); setEditTrack(false)}}>Add New Track</button>
+        <TrackList tracks={tracks} edit={edit} handleDeleteTrack={handleDeleteTrack} />
       </>}
     </>
   )
