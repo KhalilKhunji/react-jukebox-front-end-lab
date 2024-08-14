@@ -1,19 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const TrackForm = ({ handleAddTrack, setIsFormOpen }) => {
+const TrackForm = ({ handleOnSubmit, setIsFormOpen, track }) => {
     const [formData, setFormData] = useState({
         title: '',
         artist: ''
     });
 
+    useEffect(() => {
+        if(track) {
+            setFormData({ title: track.title, artist: track.artist });
+        };
+    }, [track]);
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        handleAddTrack(formData);
+        handleOnSubmit(formData);
         setIsFormOpen(false);
         setFormData({ title: '', artist: '' });
     };
 
     const handleChange = (event) => {
+        
         setFormData({...formData, [event.target.name]: event.target.value });
     };
 
