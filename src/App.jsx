@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import TrackList from './components/TrackList';
 import TrackForm from './components/TrackForm';
+import NowPlaying from './components/NowPlaying';
 import * as trackService from './services/trackService';
 
 const App = () => {
@@ -8,6 +9,7 @@ const App = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editTrack, setEditTrack] = useState(null);
+  const [currentTrack, setCurrentTrack] = useState(null);
 
   useEffect(() => {
     const getTracks = async () => {
@@ -36,7 +38,7 @@ const App = () => {
     };
   };
 
-  const edit = (track) => {
+  const handleEditTrack = (track) => {
     setIsFormOpen(true);
     setEditMode(true);
     setEditTrack(track);
@@ -74,16 +76,24 @@ const App = () => {
         throw new Error(deletedTrack.error);
       };
       setTracks(tracks.filter((track) => track._id !== trackId));
+      if (currentTrack && currentTrack._id === trackId) {
+        setCurrentTrack(null);
+      };
     } catch (error) {
       console.log(error);
     };
+  };
+
+  const handlePlayTrack = (track) => {
+    setCurrentTrack(track);
   };
 
   return(
     <>
       {isFormOpen ? <TrackForm setIsFormOpen={setIsFormOpen} handleOnSubmit={handleOnSubmit} track={ editMode ? editTrack : null} /> : <>
         <button onClick={() => {setIsFormOpen(true); setEditMode(false); setEditTrack(false)}}>Add New Track</button>
-        <TrackList tracks={tracks} edit={edit} handleDeleteTrack={handleDeleteTrack} />
+        <TrackList tracks={tracks} handleEditTrack={handleEditTrack} handleDeleteTrack={handleDeleteTrack} handlePlayTrack={handlePlayTrack} />
+        {currentTrack ? <NowPlaying currentTrack={currentTrack} /> : <></>}
       </>}
     </>
   )
